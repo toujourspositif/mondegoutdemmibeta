@@ -232,6 +232,16 @@ dialog::backdrop{background:rgba(26,16,48,.6)}
 .tabs button{flex:1}
 .tabs button[aria-selected=true]{background:var(--slime)}
 .err{color:#b00020;font-weight:700;min-height:1.3em;margin:0 0 10px}
+.msg{min-height:1.4em;font-weight:700;margin:10px 0}
+.msg.ok{color:#0a6b1f}
+.msg.bad{color:#b00020}
+dialog h2{font-family:"Bowlby One",Impact,sans-serif;font-weight:400;font-size:1.2rem;margin:0 0 10px}
+dialog p{margin:0 0 12px}
+.forgot{margin:-4px 0 12px}
+.linkbtn,.linkbtn:hover,.linkbtn:active{
+  background:none;border:0;box-shadow:none;transform:none;padding:0;
+  font-weight:700;color:var(--blue);text-decoration:underline;cursor:pointer;
+}
 footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -418,10 +428,49 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
       <label for="pass">Mot de passe (6 caractères minimum)</label>
       <input type="password" id="pass" autocomplete="current-password">
     </div>
+    <p class="forgot" id="forgotRow"><button type="button" class="linkbtn" id="forgotBtn">Mot de passe oublié ?</button></p>
     <p class="err" id="authErr" role="alert"></p>
     <div class="row">
       <button type="submit" class="primary" id="authSubmit">Me connecter</button>
       <button type="button" id="authCancel">Annuler</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ======== MODALE MOT DE PASSE OUBLIÉ ======== -->
+<dialog id="forgotDlg">
+  <form id="forgotForm" novalidate>
+    <h2>Mot de passe oublié</h2>
+    <p>Entre l’adresse email de ton compte : on t’envoie un lien pour choisir un nouveau mot de passe.</p>
+    <div class="field">
+      <label for="forgotEmail">Email</label>
+      <input type="email" id="forgotEmail" autocomplete="email">
+    </div>
+    <p class="msg" id="forgotMsg" role="status"></p>
+    <div class="row">
+      <button type="submit" class="primary" id="forgotSubmit">Envoyer le lien</button>
+      <button type="button" id="forgotBack">Retour</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ======== MODALE NOUVEAU MOT DE PASSE (après clic sur le lien reçu par email) ======== -->
+<dialog id="recoverDlg">
+  <form id="recoverForm" novalidate>
+    <h2>Nouveau mot de passe</h2>
+    <p>Choisis un nouveau mot de passe pour ton compte.</p>
+    <div class="field">
+      <label for="newPw1">Nouveau mot de passe (6 caractères minimum)</label>
+      <input type="password" id="newPw1" autocomplete="new-password">
+    </div>
+    <div class="field">
+      <label for="newPw2">Confirmer le mot de passe</label>
+      <input type="password" id="newPw2" autocomplete="new-password">
+    </div>
+    <p class="msg" id="recoverMsg" role="alert"></p>
+    <div class="row">
+      <button type="submit" class="primary" id="recoverSubmit">Enregistrer</button>
+      <button type="button" id="recoverCancel">Plus tard</button>
     </div>
   </form>
 </dialog>
@@ -860,6 +909,7 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
     $("pseudoField").hidden = !up;
     $("authSubmit").textContent = up ? "Créer mon compte" : "Me connecter";
     $("pass").autocomplete = up ? "new-password" : "current-password";
+    $("forgotRow").hidden = up;
     $("authErr").textContent = "";
   }
   $("tabIn").addEventListener("click", function(){ setTab(false); });
@@ -903,6 +953,81 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
         dlg.close();
       }
       $("pass").value = "";
+    } finally { btn.disabled = false; }
+  });
+
+  /* ---------- mot de passe oublié ---------- */
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var fdlg = $("forgotDlg"), rdlg = $("recoverDlg");
+  function setMsg(id, text, ok){
+    var n = $(id);
+    n.textContent = text || "";
+    n.className = "msg" + (text ? (ok ? " ok" : " bad") : "");
+  }
+  function redirectUrl(){ return window.location.origin + window.location.pathname; }
+
+  $("forgotBtn").addEventListener("click", function(){
+    $("forgotEmail").value = $("email").value.trim();
+    setMsg("forgotMsg", "");
+    dlg.close(); fdlg.showModal();
+  });
+  $("forgotBack").addEventListener("click", function(){
+    fdlg.close(); setTab(false); $("authErr").textContent = ""; dlg.showModal();
+  });
+
+  $("forgotForm").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    if(!sb) return;
+    var email = $("forgotEmail").value.trim();
+    setMsg("forgotMsg", "");
+    if(!EMAIL_RE.test(email)){ setMsg("forgotMsg", "Entre une adresse email valide."); return; }
+    var btn = $("forgotSubmit"); btn.disabled = true;
+    try{
+      var r = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl() });
+      if(r.error){
+        var m = (r.error.message || "").toLowerCase();
+        setMsg("forgotMsg",
+          (m.indexOf("rate limit") > -1 || m.indexOf("security purposes") > -1 || m.indexOf("seconds") > -1)
+            ? "Patiente environ une minute avant de redemander un email."
+          : (m.indexOf("not authorized") > -1 || m.indexOf("sending") > -1 || m.indexOf("smtp") > -1)
+            ? "L’envoi d’email n’est pas disponible pour cette adresse pour le moment."
+          : "Impossible d’envoyer l’email pour le moment. Réessaie plus tard.");
+        return;
+      }
+      // Même message que l'adresse existe ou non (on ne révèle pas qui a un compte)
+      setMsg("forgotMsg", "Si cette adresse correspond à un compte, un email vient d’être envoyé. Pense à regarder tes spams.", true);
+    } finally { btn.disabled = false; }
+  });
+
+  function cleanUrl(){
+    try{ history.replaceState(null, "", window.location.pathname + window.location.search); }catch(e){}
+  }
+  function openRecovery(){
+    $("newPw1").value = ""; $("newPw2").value = ""; setMsg("recoverMsg", "");
+    if(dlg.open) dlg.close();
+    if(fdlg.open) fdlg.close();
+    if(!rdlg.open) rdlg.showModal();
+  }
+  $("recoverCancel").addEventListener("click", function(){ rdlg.close(); cleanUrl(); });
+  $("recoverForm").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    if(!sb) return;
+    var p1 = $("newPw1").value, p2 = $("newPw2").value;
+    setMsg("recoverMsg", "");
+    if(p1.length < 6){ setMsg("recoverMsg", "Le mot de passe doit faire au moins 6 caractères."); return; }
+    if(p1 !== p2){ setMsg("recoverMsg", "Les deux mots de passe ne sont pas identiques."); return; }
+    var btn = $("recoverSubmit"); btn.disabled = true;
+    try{
+      var r = await sb.auth.updateUser({ password: p1 });
+      if(r.error){
+        var m = (r.error.message || "").toLowerCase();
+        setMsg("recoverMsg", m.indexOf("different from the old") > -1 ? "Choisis un mot de passe différent de l’ancien."
+                           : m.indexOf("at least") > -1 ? "Mot de passe trop court."
+                           : "Impossible de changer le mot de passe. Redemande un lien et réessaie.");
+        return;
+      }
+      rdlg.close(); cleanUrl();
+      say("Mot de passe modifié. Tu es connecté.", 6000);
     } finally { btn.disabled = false; }
   });
 
@@ -955,6 +1080,7 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
 
   if(sb){
     sb.auth.onAuthStateChange(function(evt, session){
+      if(evt === "PASSWORD_RECOVERY"){ setTimeout(openRecovery, 0); }   // lien « mot de passe oublié » cliqué
       var u = session && session.user ? session.user : null;
       if(u && (!user || user.id !== u.id)){
         user = u;
