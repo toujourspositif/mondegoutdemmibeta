@@ -983,17 +983,21 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
     if(!EMAIL_RE.test(email)){ setMsg("forgotMsg", "Entre une adresse email valide."); return; }
     var btn = $("forgotSubmit"); btn.disabled = true;
     try{
-      var r = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl() });
-      if(r.error){
-        var m = (r.error.message || "").toLowerCase();
-        setMsg("forgotMsg",
-          (m.indexOf("rate limit") > -1 || m.indexOf("security purposes") > -1 || m.indexOf("seconds") > -1)
-            ? "Patiente environ une minute avant de redemander un email."
-          : (m.indexOf("not authorized") > -1 || m.indexOf("sending") > -1 || m.indexOf("smtp") > -1)
-            ? "L’envoi d’email n’est pas disponible pour cette adresse pour le moment."
-          : "Impossible d’envoyer l’email pour le moment. Réessaie plus tard.");
-        return;
-      }
+     
+var r = await sb.functions.invoke("send-recovery-email", {
+  body: { email: email }
+});
+
+if(r.error || !r.data || !r.data.success){
+  console.error("Erreur récupération :", r.error || r.data);
+
+  setMsg(
+    "forgotMsg",
+    "Impossible d’envoyer l’email pour le moment. Réessaie plus tard."
+  );
+  return;
+}
+
       // Même message que l'adresse existe ou non (on ne révèle pas qui a un compte)
       setMsg("forgotMsg", "Si cette adresse correspond à un compte, un email vient d’être envoyé. Pense à regarder tes spams.", true);
     } finally { btn.disabled = false; }
