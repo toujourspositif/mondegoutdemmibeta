@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mon profil · Mon dégoût de MMI</title>
+<script src="vendor/supabase.js"></script>
+<script src="site-config.js"></script>
+<style>
+/* Polices hébergées sur le site (aucune requête vers Google Fonts) */
+@font-face{font-family:"Bowlby One";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/bowlby-one-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"DM Sans";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/dm-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"DM Sans";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/dm-sans-latin-700-normal.woff2) format("woff2")}
+
+:root{
+  --bg:#ff7ab8; --paper:#fff3a8; --ink:#1a1030; --slime:#8dff2e; --slime-dark:#4fc400;
+  --blue:#3d5bff; --white:#fff; --red:#ff4b4b; --shadow:6px 6px 0 var(--ink);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);
+  background-image:radial-gradient(var(--ink) 1.2px, transparent 1.4px);
+  background-size:22px 22px;
+  color:var(--ink);
+  font-family:"DM Sans",system-ui,sans-serif;
+  font-weight:500; min-height:100vh; padding:28px 16px 60px;
+}
+main{max-width:680px;margin:0 auto}
+
+h1{
+  font-family:"Bowlby One",Impact,sans-serif;font-weight:400;
+  font-size:clamp(2.2rem,7vw,4.2rem);line-height:.95;margin:0 0 8px;
+  color:var(--white);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;
+  text-shadow:6px 6px 0 var(--ink);transform:rotate(-2deg);letter-spacing:.01em;
+}
+.sub{
+  display:inline-block;background:var(--paper);border:3px solid var(--ink);
+  padding:6px 12px;margin:10px 0 18px;box-shadow:4px 4px 0 var(--ink);
+  transform:rotate(1.5deg);font-weight:700;
+}
+.bar{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 26px;
+  background:var(--white);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);
+  padding:10px 14px;font-weight:700;
+}
+.bar .grow{flex:1}
+
+.stack{display:flex;flex-direction:column;gap:22px}
+.card{background:var(--paper);border:4px solid var(--ink);box-shadow:var(--shadow);padding:18px}
+.card h2{font-family:"Bowlby One",Impact,sans-serif;font-weight:400;font-size:1.15rem;margin:0 0 12px}
+.card h3{font-size:1.05rem;margin:0 0 8px}
+.card p{margin:0 0 10px}
+.hint{font-size:.9rem;opacity:.85}
+
+button,.btnlink{
+  font:inherit;font-weight:700;color:var(--ink);cursor:pointer;background:var(--white);
+  border:3px solid var(--ink);padding:10px 14px;box-shadow:4px 4px 0 var(--ink);
+  transition:transform .08s, box-shadow .08s;
+}
+.btnlink{display:inline-block;text-decoration:none}
+button:hover,.btnlink:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+button:active,.btnlink:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink)}
+button:focus-visible,input:focus-visible,.btnlink:focus-visible,a:focus-visible{outline:4px solid var(--blue);outline-offset:3px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:var(--blue);color:var(--white)}
+.up{background:var(--slime)}
+.danger{background:var(--red);color:var(--white)}
+.small{padding:6px 10px;font-size:.9rem}
+
+input[type=text],input[type=email],input[type=password]{
+  width:100%;font:inherit;font-weight:500;color:var(--ink);background:var(--white);
+  border:3px solid var(--ink);padding:9px 10px;
+}
+label{display:block;font-weight:700;margin:0 0 6px}
+.field{margin:0 0 14px}
+.count{font-size:.85rem;text-align:right;margin-top:4px}
+.msg{min-height:1.4em;font-weight:700;margin:12px 0 0}
+.msg.ok{color:#0a6b1f}
+.msg.bad{color:#b00020}
+.pending{background:var(--white);border:3px solid var(--ink);padding:8px 10px;font-weight:700}
+.pending.bad{background:var(--red);color:var(--white)}
+.zone-danger{border:4px dashed var(--red);background:var(--white);padding:14px;margin-top:18px}
+.links{margin:0;padding-left:20px}
+.links li{margin:0 0 7px}
+.links a,.card a.inline{color:var(--blue);font-weight:700}
+.legal-nav{display:flex;flex-wrap:wrap;gap:10px 14px;margin-top:22px;font-weight:700}
+.legal-nav a{color:var(--ink);background:var(--white);border:3px solid var(--ink);padding:4px 10px;text-decoration:none;box-shadow:3px 3px 0 var(--ink)}
+footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <h1>Mon profil</h1>
+  <div class="sub">Pseudo, email, mot de passe, données : tout se règle ici</div>
+
+  <div class="bar">
+    <a class="btnlink small" href="index.html">← Retour à la jauge</a>
+    <span class="grow"></span>
+    <button class="small" id="btnLogout" hidden>Se déconnecter</button>
+  </div>
+
+  <p class="pending" id="notice" role="status" hidden></p>
+
+  <section class="card" id="loading"><p>Chargement de ton profil…</p></section>
+
+  <section class="card" id="needLogin" hidden>
+    <h2>Connexion requise</h2>
+    <p>Tu dois être connecté pour modifier ton profil.</p>
+    <a class="btnlink primary" href="index.html">Aller se connecter</a>
+  </section>
+
+  <section class="card" id="noConfig" hidden>
+    <h2>Comptes désactivés</h2>
+    <p>Renseigne SUPABASE_URL et SUPABASE_ANON_KEY en haut du script de profil.html (comme dans index.html).</p>
+  </section>
+
+  <section class="card" id="deleted" hidden>
+    <h2>Compte supprimé</h2>
+    <p>Ton compte et toutes tes données ont été supprimés. Merci d’être passé.</p>
+    <a class="btnlink primary" href="index.html">Retour à l’accueil</a>
+  </section>
+
+  <div class="stack" id="content" hidden>
+
+    <!-- ===== RÉINITIALISATION (arrivée par le lien reçu par email) ===== -->
+    <section class="card" id="recoveryCard" hidden>
+      <h2>Réinitialisation du mot de passe</h2>
+      <p>Tu es arrivé ici grâce au lien reçu par email. Choisis un nouveau mot de passe dans la section « Mon mot de passe » ci-dessous.</p>
+    </section>
+
+    <!-- ===== PSEUDO ===== -->
+    <section class="card">
+      <h2>Mon pseudo</h2>
+      <form id="pseudoForm" novalidate>
+        <div class="field">
+          <label for="pseudoEdit">Pseudo visible au classement et dans les actualités</label>
+          <input type="text" id="pseudoEdit" maxlength="20" autocomplete="nickname">
+          <div class="count"><span id="pseudoCount">0</span>/20</div>
+        </div>
+        <button type="submit" class="up" id="pseudoSave">Changer mon pseudo</button>
+        <p class="msg" id="pseudoMsg" role="status"></p>
+      </form>
+    </section>
+
+    <!-- ===== EMAIL ===== -->
+    <section class="card">
+      <h2>Mon adresse email</h2>
+      <p>Adresse actuelle : <strong id="curEmail">…</strong></p>
+      <p class="pending" id="pendingEmail" hidden></p>
+      <form id="emailForm" novalidate>
+        <div class="field">
+          <label for="newEmail">Nouvelle adresse email</label>
+          <input type="email" id="newEmail" autocomplete="email">
+        </div>
+        <div class="field" id="emailPassField">
+          <label for="emailPass">Mot de passe actuel (pour confirmer)</label>
+          <input type="password" id="emailPass" autocomplete="current-password">
+        </div>
+        <button type="submit" class="up" id="emailSave">Changer mon email</button>
+        <p class="hint" style="margin-top:10px">Un email de confirmation sera envoyé : le changement ne prend effet qu'après avoir cliqué sur le lien.</p>
+        <p class="msg" id="emailMsg" role="status"></p>
+      </form>
+    </section>
+
+    <!-- ===== MOT DE PASSE ===== -->
+    <section class="card">
+      <h2>Mon mot de passe</h2>
+      <form id="passForm" novalidate>
+        <div class="field" id="oldPassField">
+          <label for="oldPass">Mot de passe actuel</label>
+          <input type="password" id="oldPass" autocomplete="current-password">
+        </div>
+        <div class="field">
+          <label for="newPass">Nouveau mot de passe (6 caractères minimum, 8 ou plus c'est mieux)</label>
+          <input type="password" id="newPass" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label for="newPass2">Confirmer le nouveau mot de passe</label>
+          <input type="password" id="newPass2" autocomplete="new-password">
+        </div>
+        <button type="submit" class="up" id="passSave">Changer mon mot de passe</button>
+        <p class="msg" id="passMsg" role="status"></p>
+      </form>
+    </section>
+
+    <!-- ===== MES DONNÉES (RGPD) ===== -->
+    <section class="card">
+      <h2>Mes données (RGPD)</h2>
+      <p>Tu peux récupérer une copie de toutes tes données, ou supprimer ton compte, quand tu veux.</p>
+      <button type="button" class="primary" id="exportBtn">Télécharger mes données (JSON)</button>
+      <p class="msg" id="exportMsg" role="status"></p>
+
+      <div class="zone-danger">
+        <h3>Supprimer mon compte</h3>
+        <p>Action <strong>définitive</strong> : ton compte, ton profil, ton journal et tes actualités sont supprimés immédiatement et ne peuvent pas être récupérés. Pense à télécharger tes données avant.</p>
+        <form id="delForm" novalidate>
+          <div class="field" id="delPassField">
+            <label for="delPass">Mot de passe actuel (pour confirmer)</label>
+            <input type="password" id="delPass" autocomplete="current-password">
+          </div>
+          <div class="field">
+            <label for="delConfirm">Écris <strong>SUPPRIMER</strong> pour confirmer</label>
+            <input type="text" id="delConfirm" autocomplete="off">
+          </div>
+          <button type="submit" class="danger" id="delBtn">Supprimer définitivement mon compte</button>
+          <p class="msg" id="delMsg" role="status"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== DOCUMENTS LÉGAUX ===== -->
+    <section class="card">
+      <h2>Documents légaux et mes droits</h2>
+      <ul class="links">
+        <li><a href="confidentialite.html">Politique de confidentialité</a> (RGPD, tes droits, durées de conservation)</li>
+        <li><a href="cgu.html">Conditions générales d’utilisation</a></li>
+        <li><a href="mentions-legales.html">Mentions légales</a></li>
+        <li>Une demande qui ne passe pas par cette page : <a class="inline" data-mail data-site="email"></a></li>
+        <li>Une réclamation : <a href="https://www.cnil.fr/fr/plaintes" rel="noopener noreferrer" target="_blank">CNIL</a></li>
+      </ul>
+    </section>
+
+  </div>
+
+  <footer>Promis, on ne lit pas ton mot de passe. Il est haché par Supabase.</footer>
+
+  <nav class="legal-nav" aria-label="Documents légaux">
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="cgu.html">CGU</a>
+  </nav>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* Mêmes valeurs que dans index.html */
+  var SUPABASE_URL = "https://jkqkohhfoqaeszfzykbo.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_wZPckTyWZG-D9gs6HorRKA_snXc1h_O";
+
+  var SITE = window.SITE || {};
+  var LS_KEY = "degout-mmi-v2";
+  // arrivé par le lien « mot de passe oublié » ? (à lire AVANT la création du client, qui nettoie l'adresse)
+  var recovery = /type=recovery/.test(location.hash || "");
+  var urlError = /error_description=|error_code=/.test(location.hash || "");
+
+  var sb = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+  var $ = function(id){ return document.getElementById(id); };
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var user = null, myPseudo = "", gone = false;
+
+  function setMsg(id, text, ok){
+    var n = $(id);
+    n.textContent = text || "";
+    n.className = "msg" + (text ? (ok ? " ok" : " bad") : "");
+  }
+  function notice(text, bad){
+    var n = $("notice");
+    n.textContent = text || ""; n.hidden = !text;
+    n.className = "pending" + (bad ? " bad" : "");
+  }
+  function show(id){
+    ["loading", "needLogin", "noConfig", "content", "deleted"].forEach(function(x){ $(x).hidden = (x !== id); });
+  }
+  function frErr(m){
+    m = (m || "").toLowerCase();
+    if(m.indexOf("different from the old") > -1) return "Le nouveau mot de passe doit être différent de l'ancien.";
+    if(m.indexOf("at least") > -1 || m.indexOf("weak") > -1) return "Mot de passe trop faible : choisis-en un plus long.";
+    if(m.indexOf("already") > -1 && (m.indexOf("registered") > -1 || m.indexOf("exists") > -1)) return "Cette adresse email est déjà utilisée.";
+    if(m.indexOf("rate limit") > -1 || m.indexOf("too many") > -1) return "Trop de tentatives. Patiente un peu avant de réessayer.";
+    if(m.indexOf("invalid") > -1 && m.indexOf("email") > -1) return "Adresse email invalide.";
+    return "Oups, ça n'a pas marché. Réessaie dans un instant.";
+  }
+  function likeEsc(s){ return s.replace(/[\\%_]/g, "\\$&"); }
+  // Vérifie le mot de passe actuel avant une opération sensible
+  async function checkPassword(pw){
+    var r = await sb.auth.signInWithPassword({ email: user.email, password: pw });
+    return !r.error;
+  }
+  function showPending(u){
+    var p = $("pendingEmail");
+    if(u && u.new_email){
+      p.textContent = "Changement en attente vers " + u.new_email + " : clique sur le lien de confirmation reçu par email.";
+      p.hidden = false;
+    } else { p.hidden = true; }
+  }
+  function applyRecoveryUI(){
+    $("recoveryCard").hidden = !recovery;
+    $("oldPassField").hidden = recovery;
+    $("emailPassField").hidden = recovery;
+    $("delPassField").hidden = recovery;
+  }
+
+  /* ---------- pseudo ---------- */
+  $("pseudoEdit").addEventListener("input", function(){ $("pseudoCount").textContent = $("pseudoEdit").value.length; });
+  $("pseudoForm").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    if(!user) return;
+    var pseudo = $("pseudoEdit").value.trim();
+    if(pseudo.length < 2 || pseudo.length > 20){ setMsg("pseudoMsg", "Choisis un pseudo de 2 à 20 caractères."); return; }
+    if(pseudo === myPseudo){ setMsg("pseudoMsg", "C'est déjà ton pseudo."); return; }
+    var btn = $("pseudoSave"); btn.disabled = true;
+    try{
+      // pseudo déjà pris par quelqu'un d'autre ? (on neutralise % et _ pour la recherche)
+      var chk = await sb.from("profiles").select("id").ilike("pseudo", likeEsc(pseudo)).neq("id", user.id).limit(1);
+      if(!chk.error && chk.data && chk.data.length){ setMsg("pseudoMsg", "Ce pseudo est déjà pris."); return; }
+      var r = await sb.from("profiles").update({ pseudo: pseudo, updated_at: new Date().toISOString() }).eq("id", user.id);
+      if(r.error){
+        setMsg("pseudoMsg", r.error.code === "23505" ? "Ce pseudo est déjà pris." : "Impossible de changer le pseudo pour le moment.");
+        return;
+      }
+      myPseudo = pseudo;
+      setMsg("pseudoMsg", "Pseudo changé. Tu apparais maintenant sous ce nom.", true);
+    } finally { btn.disabled = false; }
+  });
+
+  /* ---------- email ---------- */
+  $("emailForm").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    if(!user) return;
+    var email = $("newEmail").value.trim(), pw = $("emailPass").value;
+    setMsg("emailMsg", "");
+    if(!EMAIL_RE.test(email)){ setMsg("emailMsg", "Entre une adresse email valide."); return; }
+    if(email.toLowerCase() === (user.email || "").toLowerCase()){ setMsg("emailMsg", "C'est déjà ton adresse actuelle."); return; }
+    if(!recovery && !pw){ setMsg("emailMsg", "Entre ton mot de passe actuel pour confirmer."); return; }
+    var btn = $("emailSave"); btn.disabled = true;
+    try{
+      if(!recovery && !(await checkPassword(pw))){ setMsg("emailMsg", "Mot de passe actuel incorrect."); return; }
+      var r = await sb.auth.updateUser({ email: email });
+      if(r.error){ setMsg("emailMsg", frErr(r.error.message)); return; }
+      $("newEmail").value = ""; $("emailPass").value = "";
+      showPending(r.data && r.data.user ? r.data.user : { new_email: email });
+      setMsg("emailMsg", "Demande envoyée. Vérifie tes mails (ancienne et nouvelle adresse) et clique sur le lien. D'ici là, connecte-toi avec ton ancienne adresse.", true);
+    } finally { btn.disabled = false; }
+  });
+
+  /* ---------- mot de passe ---------- */
+  $("passForm").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    if(!user) return;
+    var oldPw = $("oldPass").value, p1 = $("newPass").value, p2 = $("newPass2").value;
+    setMsg("passMsg", "");
+    if(!recovery && !oldPw){ setMsg("passMsg", "Entre ton mot de passe actuel."); return; }
+    if(p1.length < 6){ setMsg("passMsg", "Le nouveau mot de passe doit faire au moins 6 caractères."); return; }
+    if(p1 !== p2){ setMsg("passMsg", "Les deux nouveaux mots de passe ne sont pas identiques."); return; }
+    if(!recovery && p1 === oldPw){ setMsg("passMsg", "Le nouveau mot de passe doit être différent de l'ancien."); return; }
+    var btn = $("passSave"); btn.disabled = true;
+    try{
+      if(!recovery && !(await checkPassword(oldPw))){ setMsg("passMsg", "Mot de passe actuel incorrect."); return; }
+      var r = await sb.auth.updateUser({ password: p1 });
+      if(r.error){ setMsg("passMsg", frErr(r.error.message)); return; }
+      $("oldPass").value = ""; $("newPass").value = ""; $("newPass2").value = "";
+      recovery = false; applyRecoveryUI();
+      setMsg("passMsg", "Mot de passe modifié. Utilise-le à ta prochaine connexion.", true);
+    } finally { btn.disabled = false; }
+  });
+
+  /* ---------- export des données (droit d'accès et à la portabilité) ---------- */
+  async function fetchAll(make){
+    var out = [], from = 0, step = 1000;
+    for(;;){
+      var r = await make().range(from, from + step - 1);
+      if(r.error) throw r.error;
+      out = out.concat(r.data || []);
+      if(!r.data || r.data.length < step) break;
+      from += step;
+    }
+    return out;
+  }
+  $("exportBtn").addEventListener("click", async function(){
+    if(!user) return;
+    var btn = $("exportBtn"); btn.disabled = true; setMsg("exportMsg", "Préparation…", true);
+    try{
+      var pr = await sb.from("profiles").select("*").eq("id", user.id).maybeSingle();
+      var journal = await fetchAll(function(){ return sb.from("entries").select("*").eq("user_id", user.id).order("created_at", { ascending:true }); });
+      var posts = await fetchAll(function(){ return sb.from("posts").select("id,text,created_at").eq("user_id", user.id).order("created_at", { ascending:true }); });
+      var data = {
+        exporte_le: new Date().toISOString(),
+        site: SITE.nomSite || "Mon dégoût de MMI",
+        compte: {
+          id: user.id, email: user.email, cree_le: user.created_at,
+          derniere_connexion: user.last_sign_in_at || null,
+          metadonnees_inscription: user.user_metadata || {}
+        },
+        profil: pr.data || null,
+        journal: journal,
+        actualites: posts
+      };
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = "mes-donnees-degout-mmi-" + new Date().toISOString().slice(0, 10) + ".json";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      setMsg("exportMsg", "Fichier téléchargé.", true);
+    }catch(e){
+      setMsg("exportMsg", "Impossible de préparer l'export pour le moment.");
+    } finally { btn.disabled = false; }
+  });
+
+  /* ---------- suppression du compte (droit à l'effacement) ---------- */
+  $("delForm").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    if(!user) return;
+    setMsg("delMsg", "");
+    if($("delConfirm").value.trim() !== "SUPPRIMER"){ setMsg("delMsg", "Écris SUPPRIMER (en majuscules) pour confirmer."); return; }
+    if(!recovery && !$("delPass").value){ setMsg("delMsg", "Entre ton mot de passe actuel pour confirmer."); return; }
+    var btn = $("delBtn"); btn.disabled = true;
+    try{
+      if(!recovery && !(await checkPassword($("delPass").value))){ setMsg("delMsg", "Mot de passe actuel incorrect."); return; }
+      if(!confirm("Dernière confirmation : supprimer définitivement ton compte et toutes tes données ?")) return;
+      var r = await sb.rpc("delete_my_account");
+      if(r.error){
+        var contact = SITE.email || "l'éditeur du site";
+        var missing = r.error.code === "PGRST202" || r.error.code === "42883";
+        setMsg("delMsg", missing
+          ? "La suppression automatique n'est pas encore activée sur ce site. Écris à " + contact + " pour demander l'effacement de tes données."
+          : "Impossible de supprimer le compte pour le moment. Réessaie, ou écris à " + contact + ".");
+        return;
+      }
+      gone = true;
+      try{ await sb.auth.signOut({ scope:"local" }); }catch(e){}
+      try{ localStorage.removeItem(LS_KEY); }catch(e){}
+      $("btnLogout").hidden = true;
+      notice("");
+      show("deleted");
+      window.scrollTo(0, 0);
+    } finally { btn.disabled = false; }
+  });
+
+  /* ---------- déconnexion ---------- */
+  $("btnLogout").addEventListener("click", async function(){
+    if(sb) await sb.auth.signOut();
+    window.location.href = "index.html";
+  });
+
+  /* ---------- démarrage ---------- */
+  async function init(){
+    if(urlError) notice("Ce lien est invalide ou a expiré. Recommence la procédure depuis la page d'accueil.", true);
+    if(!sb){ show("noConfig"); return; }
+    var s = await sb.auth.getSession();
+    if(!s.data || !s.data.session){ show("needLogin"); return; }
+    var u = await sb.auth.getUser();
+    if(u.error || !u.data || !u.data.user){ show("needLogin"); return; }
+    user = u.data.user;
+    var pr = await sb.from("profiles").select("pseudo").eq("id", user.id).maybeSingle();
+    myPseudo = (pr.data && pr.data.pseudo) || "";
+    $("pseudoEdit").value = myPseudo; $("pseudoCount").textContent = myPseudo.length;
+    $("curEmail").textContent = user.email || "";
+    showPending(user);
+    applyRecoveryUI();
+    $("btnLogout").hidden = false;
+    show("content");
+  }
+  init();
+})();
+</script>
+</body>
+</html>

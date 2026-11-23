@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentions légales — Mon dégoût de MMI</title>
+<link rel="stylesheet" href="legal.css">
+<script src="site-config.js"></script>
+</head>
+<body>
+<main class="page">
+  <a class="back" href="index.html">← Retour au site</a>
+  <h1>Mentions légales</h1>
+  <p class="meta">Dernière mise à jour : <span data-site="dateMaj"></span></p>
+  <div class="todo" data-todo hidden>⚠ Page incomplète : renseigne <code>site-config.js</code> (champs manquants : <span data-missing></span>) avant de publier le site.</div>
+
+  <section class="card">
+    <h2>1. Éditeur du site</h2>
+    <div data-anon>
+      <p>Le site <strong data-site="nomSite"></strong> est édité à titre non professionnel par une personne physique qui a choisi de rester anonyme, sous le nom ou pseudonyme : <strong data-site="editeurNom"></strong>.</p>
+      <p>Conformément à l’article 6, III, 2 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l’économie numérique (LCEN), son identité a été communiquée aux hébergeurs mentionnés ci-dessous.</p>
+    </div>
+    <div data-named hidden>
+      <p>Le site <strong data-site="nomSite"></strong> est édité à titre non professionnel par <strong data-site="editeurNom"></strong>, domicilié à : <span data-site="editeurAdresse"></span>.</p>
+    </div>
+    <p><strong>Directeur de la publication</strong> : l’éditeur.</p>
+    <p><strong>Contact</strong> : <a data-mail data-site="email"></a></p>
+  </section>
+
+  <section class="card">
+    <h2>2. Hébergement</h2>
+    <ul>
+      <li><strong>Pages du site</strong> : GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis — <a href="https://github.com" rel="noopener noreferrer" target="_blank">github.com</a>.</li>
+      <li><strong>Base de données, comptes et contenus des utilisateurs</strong> : Supabase, Inc. — <a href="https://supabase.com" rel="noopener noreferrer" target="_blank">supabase.com</a>. Infrastructure hébergée dans la région : <strong data-site="regionSupabase"></strong>.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>3. Signaler un contenu</h2>
+    <p>Les utilisateurs inscrits peuvent publier des textes (actualités, phrase d’accroche, pseudo). Pour signaler un contenu que tu estimes illicite ou contraire aux <a href="cgu.html">CGU</a>, écris à <a data-mail data-site="email"></a> en indiquant :</p>
+    <ul>
+      <li>l’emplacement précis du contenu (onglet, pseudo de l’auteur, date, extrait) ;</li>
+      <li>les raisons pour lesquelles tu le juges illicite ou inapproprié ;</li>
+      <li>ton nom et ton adresse e-mail ;</li>
+      <li>une déclaration confirmant que ta demande est faite de bonne foi et que les informations fournies sont exactes.</li>
+    </ul>
+    <p>L’éditeur accuse réception de la demande et t’informe de la suite donnée. Des boutons « Signaler » préremplissent ce message sur le site.</p>
+  </section>
+
+  <section class="card">
+    <h2>4. Nature du site</h2>
+    <p>Ce site est un projet <strong>humoristique et non commercial</strong>. Il n’est affilié à aucun établissement d’enseignement, composante ou formation. Les propos publiés par les utilisateurs n’engagent que leurs auteurs.</p>
+  </section>
+
+  <section class="card">
+    <h2>5. Propriété intellectuelle</h2>
+    <ul>
+      <li>Le code, le graphisme et les textes du site sont la propriété de l’éditeur, tous droits réservés, sauf mention contraire.</li>
+      <li>Les contenus publiés par les utilisateurs restent leur propriété (voir <a href="cgu.html">CGU</a>, article 6).</li>
+      <li>Polices <strong>Bowlby One</strong> et <strong>DM Sans</strong> : licence SIL Open Font License 1.1, hébergées sur le site.</li>
+      <li>Bibliothèque <strong>supabase-js</strong> : licence MIT.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>6. Responsabilité</h2>
+    <p>Pour les contenus publiés par les utilisateurs, l’éditeur agit en qualité d’hébergeur au sens de l’article 6, I, 2 de la LCEN et de l’article 6 du règlement (UE) 2022/2065 : il ne peut voir sa responsabilité engagée que s’il n’a pas agi promptement pour retirer un contenu manifestement illicite dont il a eu connaissance.</p>
+    <p>Le site est proposé gratuitement, « en l’état », sans garantie de disponibilité continue. L’éditeur ne saurait être tenu responsable des interruptions, des pertes de données ou des dommages indirects liés à son utilisation. Pense à télécharger tes données si elles te sont précieuses.</p>
+  </section>
+
+  <section class="card">
+    <h2>7. Données personnelles</h2>
+    <p>Le traitement de tes données personnelles est détaillé dans la <a href="confidentialite.html">politique de confidentialité</a>.</p>
+  </section>
+
+  <section class="card">
+    <h2>8. Droit applicable</h2>
+    <p>Le site est soumis au droit français. En cas de litige, et à défaut de résolution amiable, les tribunaux français sont compétents, sous réserve des règles impératives applicables aux consommateurs.</p>
+  </section>
+
+  <nav class="legal-nav" aria-label="Documents légaux">
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="cgu.html">CGU</a>
+    <a href="index.html">Accueil</a>
+  </nav>
+</main>
+</body>
+</html>

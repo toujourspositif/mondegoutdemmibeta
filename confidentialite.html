@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Politique de confidentialité — Mon dégoût de MMI</title>
+<link rel="stylesheet" href="legal.css">
+<script src="site-config.js"></script>
+</head>
+<body>
+<main class="page">
+  <a class="back" href="index.html">← Retour au site</a>
+  <h1>Politique de confidentialité</h1>
+  <p class="meta">Dernière mise à jour : <span data-site="dateMaj"></span></p>
+  <div class="todo" data-todo hidden>⚠ Page incomplète : renseigne <code>site-config.js</code> (champs manquants : <span data-missing></span>) avant de publier le site.</div>
+
+  <section class="card summary">
+    <h2>En bref</h2>
+    <ul>
+      <li><strong>Sans compte (mode invité)</strong> : ta jauge et ton journal restent dans ton navigateur et ne sont jamais envoyés à l’éditeur.</li>
+      <li><strong>Avec un compte</strong> : je conserve ton e-mail, ton mot de passe (sous forme chiffrée), ton pseudo, ton niveau, ta phrase d’accroche, ton journal et tes actualités.</li>
+      <li><strong>Public</strong> : pseudo, phrase d’accroche, niveau et actualités. <strong>Privé</strong> : e-mail, mot de passe, journal.</li>
+      <li>Pas de publicité, pas de revente de données, pas de cookies publicitaires ni de mesure d’audience.</li>
+      <li>Tu peux modifier, télécharger et supprimer toutes tes données depuis la page <a href="profil.html">Mon profil</a>.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>1. Qui est responsable de tes données ?</h2>
+    <p>Le site <strong data-site="nomSite"></strong> (« le site ») est édité à titre non professionnel par <strong data-site="editeurNom"></strong> (« l’éditeur »). L’éditeur est le responsable du traitement de tes données personnelles au sens du règlement (UE) 2016/679 (« RGPD ») et de la loi « Informatique et Libertés » du 6 janvier 1978.</p>
+    <p>Contact pour toute question ou pour exercer tes droits : <a data-mail data-site="email"></a>.</p>
+  </section>
+
+  <section class="card">
+    <h2>2. Les données traitées, pourquoi, et sur quelle base légale</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Données</th><th>Finalité</th><th>Base légale</th><th>Qui peut les voir ?</th></tr></thead>
+      <tbody>
+        <tr><td>Adresse e-mail, mot de passe (stocké uniquement sous forme hachée), dates de création et de dernière connexion</td><td>Créer ton compte, te connecter, t’envoyer les e-mails de sécurité (confirmation, réinitialisation)</td><td>Exécution du service que tu demandes (art. 6.1.b RGPD)</td><td>Toi et l’éditeur. Jamais le public.</td></tr>
+        <tr><td>Pseudo, phrase d’accroche, niveau de dégoût</td><td>Faire fonctionner le classement</td><td>Exécution du service (art. 6.1.b)</td><td>Tout le monde, même sans compte</td></tr>
+        <tr><td>Actualités publiées (texte, date)</td><td>Fil d’actualités partagé</td><td>Exécution du service (art. 6.1.b)</td><td>Tout le monde, même sans compte</td></tr>
+        <tr><td>Journal (notes, dates, niveau, effet sur la jauge)</td><td>Te permettre de suivre l’évolution de ton humeur</td><td>Exécution du service (art. 6.1.b)</td><td>Toi seul. L’éditeur y a techniquement accès via la base de données mais ne le consulte pas.</td></tr>
+        <tr><td>Preuve d’acceptation : date et version des conditions acceptées à l’inscription, confirmation de l’âge minimum</td><td>Pouvoir démontrer que tu as pris connaissance de ces documents</td><td>Intérêt légitime (art. 6.1.f) et obligation de pouvoir démontrer le respect du RGPD (art. 5.2)</td><td>L’éditeur</td></tr>
+        <tr><td>Données techniques : adresse IP, date et heure, navigateur</td><td>Sécurité, lutte contre le spam et les abus, bon fonctionnement</td><td>Intérêt légitime (art. 6.1.f)</td><td>Les hébergeurs (voir article 5)</td></tr>
+        <tr><td>Signalements et échanges par e-mail</td><td>Traiter les signalements de contenus et tes demandes</td><td>Obligation légale (art. 6.1.c : règlement (UE) 2022/2065 « DSA » et loi du 21 juin 2004) et intérêt légitime</td><td>L’éditeur</td></tr>
+      </tbody>
+    </table></div>
+    <p>Le journal et les actualités sont des zones de texte libre : <strong>n’y écris pas de données sensibles</strong> (santé, opinions politiques ou religieuses, vie sexuelle, origine…) ni d’informations permettant d’identifier une autre personne.</p>
+    <p>Je ne prends aucune décision automatisée te concernant et je ne fais aucun profilage. Le classement est un simple tri par le niveau que les utilisateurs déclarent eux-mêmes.</p>
+  </section>
+
+  <section class="card">
+    <h2>3. Ce qui est public</h2>
+    <p>Ton <strong>pseudo</strong>, ta <strong>phrase d’accroche</strong> et ton <strong>niveau</strong> apparaissent dans le classement, et tes <strong>actualités</strong> dans le fil, pour tous les visiteurs, avec ou sans compte. Choisis un pseudo qui ne permet pas de t’identifier si tu ne le souhaites pas. Ton adresse e-mail n’est jamais affichée.</p>
+  </section>
+
+  <section class="card">
+    <h2>4. Cookies et stockage local</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Élément</th><th>À quoi il sert</th><th>Durée</th></tr></thead>
+      <tbody>
+        <tr><td><code>degout-mmi-v2</code> (stockage local du navigateur)</td><td>Mode invité : mémoriser ta jauge et ton journal sur ton appareil</td><td>Jusqu’à ce que tu effaces les données du site dans ton navigateur</td></tr>
+        <tr><td><code>sb-…-auth-token</code> (stockage local du navigateur)</td><td>Session de connexion (service d’authentification Supabase)</td><td>Tant que tu restes connecté ; supprimée à la déconnexion</td></tr>
+        <tr><td>Cache de l’application (service worker)</td><td>Si tu installes le site comme application : conserver les fichiers du site (pages, styles, polices) pour qu’il se charge plus vite. Aucune donnée personnelle n’y est stockée.</td><td>Jusqu’à désinstallation de l’application ou nettoyage du navigateur</td></tr>
+      </tbody>
+    </table></div>
+    <p>Ces éléments sont <strong>strictement nécessaires</strong> au service que tu demandes. D’après les lignes directrices de la CNIL, ils ne nécessitent pas ton consentement : c’est pourquoi il n’y a pas de bannière de cookies. Le site n’utilise aucun cookie ou traceur publicitaire, de mesure d’audience ou de réseaux sociaux. Si cela devait changer, ton consentement te serait demandé au préalable.</p>
+    <p>Les polices et la bibliothèque JavaScript du site sont hébergées sur le site lui-même : aucune requête vers un serveur tiers (type Google Fonts ou CDN) n’est faite pour les afficher.</p>
+  </section>
+
+  <section class="card">
+    <h2>5. Qui reçoit tes données ?</h2>
+    <ul>
+      <li><strong>Supabase, Inc.</strong> : base de données, authentification et envoi des e-mails de confirmation ou de réinitialisation. Les données sont hébergées dans la région suivante : <strong data-site="regionSupabase"></strong>. Même sans compte, l’affichage du classement et des actualités interroge ce service : ton adresse IP lui est donc visible.</li>
+      <li><strong>Prestataire d’envoi des e-mails</strong> (confirmation d’inscription, réinitialisation de mot de passe, changement d’adresse) : <strong data-site="emailPrestataire"></strong>. Il voit ton adresse e-mail et le contenu de ces messages.</li>
+      <li><strong>GitHub, Inc. (GitHub Pages)</strong> : diffuse les pages du site. Comme tout hébergeur web, il reçoit l’adresse IP et les informations techniques des visiteurs.</li>
+      <li><strong>Les autorités</strong>, uniquement si la loi l’exige (réquisition judiciaire, par exemple).</li>
+    </ul>
+    <p>Je ne vends pas tes données, je ne les loue pas et je ne les utilise pas à des fins publicitaires. Seul l’éditeur a accès à la base de données.</p>
+  </section>
+
+  <section class="card">
+    <h2>6. Transferts hors de l’Union européenne</h2>
+    <p>Supabase, Inc. et GitHub, Inc. sont des sociétés établies hors de l’Union européenne (notamment aux États-Unis). Certains traitements peuvent donc impliquer un transfert de données hors de l’UE. Ces transferts sont encadrés par les garanties prévues par le RGPD (clauses contractuelles types de la Commission européenne et/ou adhésion au cadre de protection des données UE–États-Unis, selon le prestataire). Tu peux demander des précisions à l’éditeur.</p>
+  </section>
+
+  <section class="card">
+    <h2>7. Combien de temps sont-elles conservées ?</h2>
+    <ul>
+      <li><strong>Compte et contenus associés</strong> (profil, journal, actualités) : jusqu’à la suppression de ton compte, que tu peux faire à tout moment. Les comptes inactifs depuis plus de 24 mois pourront être supprimés, après prévenance par e-mail.</li>
+      <li><strong>Après suppression</strong> : tes données sont effacées de la base active. Les éventuelles sauvegardes techniques de l’hébergeur disparaissent selon leur propre cycle de rotation.</li>
+      <li><strong>Preuve d’acceptation</strong> : conservée avec le compte, donc supprimée avec lui.</li>
+      <li><strong>Données techniques (journaux de connexion)</strong> : selon les durées propres aux hébergeurs, qui ne sont pas contrôlées par l’éditeur.</li>
+      <li><strong>Signalements et demandes par e-mail</strong> : le temps de les traiter, puis supprimés au plus tard 12 mois après leur clôture.</li>
+      <li><strong>Mode invité</strong> : sur ton appareil uniquement, tant que tu ne les effaces pas.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>8. Tes droits</h2>
+    <p>Tu disposes des droits suivants sur tes données :</p>
+    <ul>
+      <li><strong>Accès et portabilité</strong> : le bouton « Télécharger mes données » de la page <a href="profil.html">Mon profil</a> te fournit une copie de tes données (fichier JSON).</li>
+      <li><strong>Rectification</strong> : tu peux modifier ton pseudo, ton adresse e-mail et ton mot de passe depuis <a href="profil.html">Mon profil</a>, et ta phrase d’accroche et ton journal depuis la page d’accueil.</li>
+      <li><strong>Effacement</strong> : le bouton « Supprimer mon compte » de <a href="profil.html">Mon profil</a> supprime immédiatement ton compte, ton profil, ton journal et tes actualités.</li>
+      <li><strong>Opposition, limitation, retrait</strong> d’un consentement : écris à l’éditeur.</li>
+      <li><strong>Directives post-mortem</strong> : tu peux définir des directives sur le sort de tes données après ton décès (article 85 de la loi « Informatique et Libertés »).</li>
+    </ul>
+    <p>Pour toute demande qui ne passe pas par la page de profil : <a data-mail data-site="email"></a>. Je réponds dans un délai maximum d’un mois (art. 12 RGPD). En cas de doute raisonnable sur ton identité, je pourrai te demander de confirmer ta demande depuis l’adresse e-mail de ton compte.</p>
+    <p>Si tu estimes que tes droits ne sont pas respectés, tu peux introduire une réclamation auprès de la <strong>CNIL</strong> : 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07 — <a href="https://www.cnil.fr/fr/plaintes" rel="noopener noreferrer" target="_blank">www.cnil.fr/fr/plaintes</a>.</p>
+  </section>
+
+  <section class="card">
+    <h2>9. Sécurité</h2>
+    <ul>
+      <li>Les échanges avec le site et la base de données sont chiffrés (HTTPS).</li>
+      <li>Les mots de passe sont hachés par le service d’authentification : l’éditeur ne peut pas les lire.</li>
+      <li>Des règles d’accès à la base garantissent que chacun ne peut lire et modifier que ses propres données privées.</li>
+      <li>Des limites anti-spam encadrent les publications.</li>
+    </ul>
+    <p>Aucun système n’est infaillible. En cas de violation de données présentant un risque pour tes droits, tu serais informé et la CNIL notifiée dans les conditions prévues par le RGPD.</p>
+  </section>
+
+  <section class="card">
+    <h2>10. Âge minimum</h2>
+    <p>La création d’un compte est réservée aux personnes d’au moins <strong>15 ans</strong>. Si l’éditeur apprend qu’un compte appartient à une personne plus jeune, il le supprime.</p>
+  </section>
+
+  <section class="card">
+    <h2>11. Modifications de cette politique</h2>
+    <p>Cette politique peut évoluer. La date de dernière mise à jour figure en haut de la page. En cas de changement important, les utilisateurs inscrits en seront informés.</p>
+  </section>
+
+  <nav class="legal-nav" aria-label="Documents légaux">
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="cgu.html">CGU</a>
+    <a href="index.html">Accueil</a>
+  </nav>
+</main>
+</body>
+</html>
