@@ -81,7 +81,8 @@ label{display:block;font-weight:700;margin:0 0 6px}
 .zone-danger{border:4px dashed var(--red);background:var(--white);padding:14px;margin-top:16px}
 .row{display:flex;flex-wrap:wrap;gap:10px}
 
-.legal-nav{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:26px;font-weight:700}
-.legal-nav a{color:var(--ink);background:var(--white);border:3px solid var(--ink);padding:4px 10px;text-decoration:none;box-shadow:3px 3px 0 var(--ink)}
+.legal-nav{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:10px;font-size:.8rem;font-weight:500}
+.legal-nav a{color:var(--ink);background:none;border:0;padding:0;box-shadow:none;text-decoration:underline}
+.legal-nav a:hover{text-decoration-thickness:2px}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
