@@ -381,6 +381,8 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
       var pr = await sb.from("profiles").select("*").eq("id", user.id).maybeSingle();
       var journal = await fetchAll(function(){ return sb.from("entries").select("*").eq("user_id", user.id).order("created_at", { ascending:true }); });
       var posts = await fetchAll(function(){ return sb.from("posts").select("id,text,created_at").eq("user_id", user.id).order("created_at", { ascending:true }); });
+      var likes = [];
+      try{ likes = await fetchAll(function(){ return sb.from("post_likes").select("post_id,created_at").eq("user_id", user.id).order("created_at", { ascending:true }); }); }catch(e){}
       var data = {
         exporte_le: new Date().toISOString(),
         site: SITE.nomSite || "Mon dégoût de MMI",
@@ -391,7 +393,8 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
         },
         profil: pr.data || null,
         journal: journal,
-        actualites: posts
+        actualites: posts,
+        likes_actualites: likes
       };
       var blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
       var url = URL.createObjectURL(blob);
