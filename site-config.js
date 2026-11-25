@@ -43,7 +43,7 @@ window.SITE = {
     document.querySelectorAll("[data-site]").forEach(function (n) {
       var v = S[n.getAttribute("data-site")];
       if (v === undefined || v === "" || v === null) {
-        n.textContent = "Francsixsous";
+        n.textContent = "[à compléter]";
         n.classList.add("todo-inline");
       } else {
         n.textContent = v;
