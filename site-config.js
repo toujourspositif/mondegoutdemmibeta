@@ -1,16 +1,10 @@
-/* =====================================================================
-   CONFIGURATION DU SITE : c'est le SEUL fichier à compléter.
-   Les pages légales (mentions, confidentialité, CGU) et la page profil
-   utilisent ces valeurs. Tant que des champs « À COMPLÉTER » sont vides,
-   un bandeau d'avertissement s'affiche sur les pages légales.
-   ===================================================================== */
 window.SITE = {
 
   /* ---- À COMPLÉTER AVANT DE PUBLIER ---- */
   nomSite: "Mon dégoût de MMI",
 
   // Prénom NOM de l'éditeur (ou un pseudonyme si tu choisis de rester anonyme, voir plus bas)
-  editeurNom: "",
+  editeurNom: "Francsixsous",
 
   // Adresse e-mail de contact : sert aux demandes RGPD ET aux signalements de contenus.
   // Pense à la consulter régulièrement. Tu peux créer une adresse dédiée.
@@ -49,7 +43,7 @@ window.SITE = {
     document.querySelectorAll("[data-site]").forEach(function (n) {
       var v = S[n.getAttribute("data-site")];
       if (v === undefined || v === "" || v === null) {
-        n.textContent = "[à compléter]";
+        n.textContent = "Francsixsous";
         n.classList.add("todo-inline");
       } else {
         n.textContent = v;
