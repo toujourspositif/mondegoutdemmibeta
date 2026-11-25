@@ -8,11 +8,11 @@ window.SITE = {
 
   // Adresse e-mail de contact : sert aux demandes RGPD ET aux signalements de contenus.
   // Pense à la consulter régulièrement. Tu peux créer une adresse dédiée.
-  email: "",
+  email: "mondegoutdemmi@gmail.com",
 
   // Région où Supabase héberge ta base. À lire dans Supabase :
   // Project Settings > General > Region. Exemple : "Union européenne (Francfort, Allemagne)"
-  regionSupabase: "",
+  regionSupabase: "Centre Europe (Frankfurt)",
 
   // Service qui envoie les e-mails d'inscription / de réinitialisation (réglé dans Supabase > Authentication > SMTP).
   // Mets "Google (Gmail)" si tu utilises Gmail, ou le nom de ton prestataire.
