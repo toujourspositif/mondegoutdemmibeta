@@ -968,22 +968,51 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
   function newsQuery(cols){
     return sb.from("posts").select(cols).order("created_at", { ascending:false }).range(0, newsLimit);   // newsLimit + 1 lignes
   }
-  async function loadNews(){
-    if(!sb){ renderNews([], false, "Les actualités s’activeront une fois Supabase configuré."); return; }
-    var r = await newsQuery("id,user_id,text,created_at,like_count,profiles(pseudo)");
-    likesAvailable = !r.error;
-    if(r.error){ r = await newsQuery("id,user_id,text,created_at,profiles(pseudo)"); }   // likes pas encore activés en base
-    if(r.error){ renderNews([], false, "Actualités indisponibles pour le moment."); return; }
-    var rows = r.data || [], more = rows.length > newsLimit;
-    if(more) rows = rows.slice(0, newsLimit);
-    myLikes = {};
-    if(likesAvailable && user && rows.length){
-      var lk = await sb.from("post_likes").select("post_id").in("post_id", rows.map(function(x){ return x.id; }));
-      if(!lk.error && lk.data) lk.data.forEach(function(x){ myLikes[x.post_id] = true; });
-    }
-    renderNews(rows, more);
+
+
+  
+  
+async function loadNews(){
+  if(!sb){
+    renderNews([], false, "Les actualités s’activeront une fois Supabase configuré.");
+    return;
   }
 
+  var r = await newsQuery("id,user_id,text,created_at,like_count");
+  likesAvailable = !r.error;
+
+  if(r.error){
+    r = await newsQuery("id,user_id,text,created_at");
+  }
+
+  if(r.error){
+    console.error("Erreur Supabase actualités :", r.error);
+    renderNews([], false, "Actualités indisponibles pour le moment.");
+    return;
+  }
+
+  var rows = r.data || [], more = rows.length > newsLimit;
+  if(more) rows = rows.slice(0, newsLimit);
+
+  myLikes = {};
+
+  if(likesAvailable && user && rows.length){
+    var lk = await sb.from("post_likes")
+      .select("post_id")
+      .in("post_id", rows.map(function(x){ return x.id; }));
+
+    if(!lk.error && lk.data){
+      lk.data.forEach(function(x){ myLikes[x.post_id] = true; });
+    }
+  }
+
+  renderNews(rows, more);
+}
+
+
+
+
+  
   /* ---------- likes ---------- */
   function likeButton(r){
     var liked = !!myLikes[r.id], count = r.like_count || 0;
