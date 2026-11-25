@@ -970,14 +970,15 @@ footer{margin-top:30px;font-size:.9rem;font-weight:700;transform:rotate(-1deg)}
   }
 
 
-  
-  
+
+
 async function loadNews(){
   if(!sb){
     renderNews([], false, "Les actualités s’activeront une fois Supabase configuré.");
     return;
   }
 
+  // 1. Récupérer les publications, sans jointure profiles
   var r = await newsQuery("id,user_id,text,created_at,like_count");
   likesAvailable = !r.error;
 
@@ -991,23 +992,56 @@ async function loadNews(){
     return;
   }
 
-  var rows = r.data || [], more = rows.length > newsLimit;
+  var rows = r.data || [];
+  var more = rows.length > newsLimit;
   if(more) rows = rows.slice(0, newsLimit);
 
+  // 2. Récupérer les pseudos séparément
+  var userIds = [...new Set(rows.map(function(x){ return x.user_id; }).filter(Boolean))];
+
+  if(userIds.length){
+    var profilesResult = await sb
+      .from("profiles")
+      .select("id,pseudo")
+      .in("id", userIds);
+
+    if(profilesResult.error){
+      console.error("Erreur récupération des pseudos :", profilesResult.error);
+    } else {
+      var profilesById = {};
+
+      (profilesResult.data || []).forEach(function(profile){
+        profilesById[profile.id] = profile.pseudo;
+      });
+
+      rows.forEach(function(post){
+        post.profiles = {
+          pseudo: profilesById[post.user_id] || "Anonyme"
+        };
+      });
+    }
+  }
+
+  // 3. Récupérer les likes
   myLikes = {};
 
   if(likesAvailable && user && rows.length){
-    var lk = await sb.from("post_likes")
+    var lk = await sb
+      .from("post_likes")
       .select("post_id")
       .in("post_id", rows.map(function(x){ return x.id; }));
 
     if(!lk.error && lk.data){
-      lk.data.forEach(function(x){ myLikes[x.post_id] = true; });
+      lk.data.forEach(function(x){
+        myLikes[x.post_id] = true;
+      });
     }
   }
 
+  // 4. Afficher les actualités
   renderNews(rows, more);
 }
+
 
 
 
